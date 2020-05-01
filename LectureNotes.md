@@ -250,17 +250,6 @@
         
         * Our 3-table example is a bit more complicated because a farm can have many different animal types and the animal types can be found on many different farms. 
 
-        * The third table is usually called an _intermediary table_, a _join table_, or a _go-between table_ whose only purpose is to hold the foreign key references for other tables. These particular tables are kind of weird because they don't need a specific id. The primary key can actually be a combination of the two foreign keys. 
-
-            * For example, you can have many rows that use the farm ID of 1 and many rows that use the animal ID of 2; but if the primary key is a combination of the two columns, you can only have one row that uses a combination of those two IDs. 
-
-                * Two farms use the chicken id, but their primary keys are different. 
-
-                    * LLR's Primary Combo Key is 1 2
-                    * MF's Primary Combo Key is 2 2
-
-                * Every instance will be unique
-    
 
         ```
         // Table: farms  (table A)
@@ -300,7 +289,34 @@
         ```
 
 
+        * The third table is usually called an _intermediary table_, a _join table_, or a _go-between table_ whose only purpose is to hold the foreign key references for other tables. These particular tables are kind of weird because they don't need a specific id. The primary key can actually be a combination of the two foreign keys. 
 
-3. Schema Design
+            * For example, you can have many rows that use the farm ID of 1 and many rows that use the animal ID of 2; but if the primary key is a combination of the two columns, you can only have one row that uses a combination of those two IDs. 
 
-4. Implement Schema 
+                * Two farms use the chicken id, but their primary keys are different. 
+
+                    * LLR's Primary Combo Key is 1 2
+                    * MF's Primary Combo Key is 2 2
+
+                * Every instance will be unique because of the way the primary key is set up. It's a combination of these two columns rather than a single ID column. 
+
+        * Other examples of many-to-many:
+            
+            * Companies and Employees - Companies have many employees and employees can work at multiple companies at the same time.
+            
+            * People and Hobbies - Many people enjoy the same hobbies but there are also many hobbies enjoyed by individuals.
+            
+            * Countries and People - Dual citizens and countries have many citizens.
+            
+            * Stores and Products
+
+    * **Q:** How do you decide on which type of relationship to use? 
+      **A:** It depends on the relationship of the data. It goes back to what was discussed in the Guided Project 3 lecture. You have to think through the type of data that you're storing. 
+    
+      Before you actually code your schema, you have to think about your data. When you're thinking about the data, that's the time to decide what types of relationships should exist between different pieces of data. This should all happen in a planning phase before you actually create your database schema. 
+            
+### Code Along!
+
+1. Before we write any code, there's this section called "Client Requirements," that simulates this scenario that the client comes to us to build a database for them with specific requirements of what it needs to store. We have to take these requirements and actually build out that functional database for them. 
+
+2. We are going to draw it all out before writing any code. It will help visualize the schema. 
