@@ -371,7 +371,47 @@
 
     * Now we have an overview of how our database is going to look like. This will help us a lot when we actually start coding it. 
 
-    * START CODING! 
+#### START CODING! 
     ```
     Video at 44:49 just before the 5 minute timer starts
     ```
+
+1. Create a new migration file. `npx knex migration:make initial`
+
+    * Look in data folder and open the initial migration file. 
+
+    * Both of our functions need to be async
+
+    * Create our Zoos table in the up function
+
+    * Create the zoo id. It needs to auto increment an integer.
+
+    * Create the name column. It will be a string. In SQL there's only one type of string: text. We can use string or varchar but then it will get converted to a text value. 
+
+    * Create the address column. Make it unique since you can't have 2 zoos at the same location. 
+
+    * Drop the table in the down function if it exists. 
+
+    ```
+    exports.up = async function(knex) {
+        await knex.schema.createTable("zoos", (table) => {
+            table.increments("id")
+            table.text("name").notNull()
+            table.text("address").notNull().unique()
+        })
+    }
+
+    exports.down = async function(knex) {
+        await knex.schema.dropTableIfExists("zoos")
+    }
+    ```
+
+2. Create the zoos db3 file by running the migration. `npx knex migration:latest`
+
+    * Open the db3 file in DB Browser. You'll see the zoos table. 
+
+    * Since we're not quite done with the migration yet and we haven't actually deployed this to the live database, just roll it back. `npx knex migration: rollback`.
+
+    * While you could do a new migration for each table, but normally you should think of migration in terms of changes to your database over time instead of tables. Each migration file represents a chunk of time. 
+        
+        * During a specific period of time, you'd put all your data into one migration. Then, when you come back later, you'd create a new migration file. 
