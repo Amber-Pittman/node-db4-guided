@@ -170,12 +170,37 @@
         2           6   // MF has pigs
         ```
 
+ 
+2. 3 Different Relationship Types
+    Since we're working with relational DBMS, obviously tables can have relationships to other tables.      
+
+    * **One-to-One Relationships** - Table A can only link to a single row in Table B and vice versa. It's usually only useful for splitting up tables that have a ton of columns. 
         
+        * Example: Let's say our farms table also has a column called revenue for tracking the revenue of that farm. We split that revenue value out into another table. The new revenue table would link back to the farm table with the farm_id column, creating a one-to-one relationship.
+        
+        ```
+        // Table: farms
+
+        id      name            revenue  
+        ----------------------------------------
+
+        1       Lon Lon Ranch   56000
+        2       Morton Farm     142600
+
+        // Table: revenue
+
+        id      revenue     farm_id
+        ----------------------------------------
+
+        1       56000       1
+        2       142600      2
+        ```
 
 
+    * **One-to-Many Relationships** - Our 3-table example above is a bit more complicated because a farm can have many different animal types and the animal types can be found on many different farms. It's no longer that uni-directional relationship.
 
+    * **Many-to-Many Relationships** -
 
-2. Different Relationship Types
 
 3. Schema Design
 
