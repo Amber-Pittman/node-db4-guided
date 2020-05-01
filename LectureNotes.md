@@ -406,7 +406,8 @@
     }
     ```
 
-2. Create the zoos db3 file by running the migration. `npx knex migration:latest`
+2. Create the Zoos Table
+    * Create the zoos db3 file by running the migration. `npx knex migration:latest`
 
     * Open the db3 file in DB Browser. You'll see the zoos table. 
 
@@ -416,7 +417,7 @@
         
         * During a specific period of time, you'd put all your data into one migration. Then, when you come back later, you'd create a new migration file. 
 
-3. Create the Animal table. 
+3. Create the Animal Table. 
 
     * The animal table needs an ID, name, and species id. 
 
@@ -451,6 +452,120 @@
 
     exports.down = async function(knex) {
         await knex.schema.dropTableIfExists("animals")
+        await knex.schema.dropTableIfExists("zoos")
+    }
+    ```
+3. Create the Species Table
+
+    * The species table needs an ID and a name.
+
+    * Inside the up function, create the new table. 
+
+    * Create the id column.
+
+    * Run the latest migration to make sure you don't have any syntax errors. `npx knex migrate:latest` The three tables are all there with all their columns. 
+
+    * What's a potential problem you see with the order we're creating these tables in? We didn't get any errors but are there any code in this that could potentially be problematic if you think through how this is running? 
+        
+        * **A:** We're creating this foreign key _before_ the species table exists. We're defining the speciesId corresponding before its table even exists. 
+
+        Order of operations is very important when dealing with relationships. We need to make sure the table exists before we try to make the animals table reference it. 
+
+        We can easily correct it by moving the species table up before the animals table on the up function. 
+
+        In the down function, we can't really delete the species table before the animals table because animals is referencing it. 
+
+    * Rollback the migration again. `npx knex migrate:rollback`
+
+    ```
+    exports.up = async function(knex) {
+        await knex.schema.createTable("zoos", (table) => {
+            table.increments("id")
+            table.text("name").notNull()
+            table.text("address").notNull().unique()
+        })
+
+        await knex.schema.createTable("species", (table) => {
+            table.increments("id")
+            table.text("name").notNull().unique()
+        })
+
+        await knex.schema.createTable("animals", (table) => {
+            table.increments("id")
+            table.text("name").notNull().unique()
+            table.integer("species_id").references("id").inTable("species")
+        })
+
+    }
+
+    exports.down = async function(knex) {
+        await knex.schema.dropTableIfExists("animals")
+        await knex.schema.dropTableIfExists("species")
+        await knex.schema.dropTableIfExists("zoos")
+    }
+    ```
+
+4. Create the Zoos_Animals Table
+    
+    * The zoos animals table needs a zoo id, animal id, a from-date, and a to-date.
+
+    * This time, the ID is not going to have an increments column. We don't need a primary key on this table.
+
+    * Use the zooId as a foreign key by using references and refer to the zoos table.
+
+    * Ditto for animalId. 
+
+    * Define both of the date columns. 
+    
+    * Create a default on the to_date using the function knex.raw. We pass in a string of current timestamp. This allows us to automatically creates the start date. 
+
+        * `knex.raw` will pass `current_timestamp` without quotes; meaning it's an internal SQL variable and not a literal string
+
+        * Instead, it's an expression, so it'll use the actual current timestamp for a default value. 
+
+    * Give it a primary key. 
+        
+        * Even though it doesn't have an ID column, we still need to provide a primary key. Every table _must_ have a unique primary key. But since our primary key is a combination of both columns, you can define it with `.primary` and give it an array of two column names.
+
+    * Drop the zoos animals table first in the down function.
+
+    * Rollback the migration with `npx knex migrate:rollback` before migrating the latest again `npx knex migrate:latest`.
+
+    * Check your database. All tables are there with their primary keys. Zoo Animals has 2 primary keys on it as expected. 
+
+
+    ```
+    exports.up = async function(knex) {
+        await knex.schema.createTable("zoos", (table) => {
+            table.increments("id")
+            table.text("name").notNull()
+            table.text("address").notNull().unique()
+        })
+
+        await knex.schema.createTable("species", (table) => {
+            table.increments("id")
+            table.text("name").notNull().unique()
+        })
+
+        await knex.schema.createTable("animals", (table) => {
+            table.increments("id")
+            table.text("name").notNull().unique()
+            table.integer("species_id").references("id").inTable("species")
+        })
+
+        await knex.schema.createTable("zoos_animals", (table) => {
+        table.integer("zoo_id").references("id").inTable("zoos")
+        table.integer("animal_id").references("id").inTable("animals")
+        table.date("from_date").defaultTo(knex.raw("current_timestamp"))
+        table.date("to_date")
+        table.primary(["zoo_id", "animal_id"])
+        })
+    }
+
+    exports.down = async function(knex) {
+        await knex.schema.dropTableIfExists("zoos_animals")
+        await knex.schema.dropTableIfExists("animals")
+        await knex.schema.dropTableIfExists("species")
         await knex.schema.dropTableIfExists("zoos")
     }
     ```
