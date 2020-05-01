@@ -348,4 +348,4 @@
 
 
 
-<img src="assets/DataModeling-SchemaDesign.jpg" data-pin-nopin="true" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species." width=500/>
+<img src="assets/DataModeling-SchemaDesign.jpg" data-pin-nopin="true" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species." width=750 align="center"/>
