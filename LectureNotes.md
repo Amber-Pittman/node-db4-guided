@@ -347,5 +347,6 @@
         * Since it's not a direct relationship, we can connect them with a dotted line and define it as `* : *` for many-to-many. 
 
 
-
-<img src="assets/DataModeling-SchemaDesign.jpg" data-pin-nopin="true" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species." width=750 align="center"/>
+<p align="center">
+    <img src="assets/DataModeling-SchemaDesign.jpg" data-pin-nopin="true" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species." width=750 /> 
+</p>
