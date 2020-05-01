@@ -51,6 +51,7 @@
 
         * The table below is just kind of mimicking the JavaScript object. This table is considered denormalized (at the moment). Since we're storing this list of animals directly in the farms table.
 
+
         ```
         // Table: farms
 
@@ -59,6 +60,7 @@
 
         1       Lon Lon Ranch   horses, chickens, cows
         ```
+
 
         * How would we normalize this data? Move the animals into its own table. Then we would use foreign keys to point back to the farms table.
 
@@ -81,8 +83,10 @@
         3       cows        1
         ```
 
+
         * We're getting there in terms of normalizing our data. But, there's still a problem. Both the animal name and the farm_id are repeating. If you think about the data, you can have the same type of animals on several different farms.  For example, Morton Farm also has chickens and cows. Those two animals are redundant.
         
+
         ```
         // Table: farms
 
@@ -106,8 +110,10 @@
         6       pigs        2
         ```
 
+
         * What if you needed to rename the string value of chickens to hens later down the line? We could write a SQL query that updates all the rows in the animals table with a WHERE statement. What if that query got cut short and only updated some of the rows but not others? It would create out of sync data (data anomalies).
         
+
         ```
         // Table: animals
 
@@ -122,6 +128,7 @@
         6       pigs        2
         ```
 
+
         * How would we go a step further to prevent this data anomaly from happening? We would create a _third table_. 
 
             * This new, third table is going to act like a go between, between the farms table and the animals table. 
@@ -134,41 +141,42 @@
 
             * This is an example of a **_Many-to-Many Relationship_**.
 
-        ```
-        // Table: farms
 
-        id      name   
-        ------------------------
+            ```
+            // Table: farms
 
-        1       Lon Lon Ranch  
-        2       Morton Farm     
+            id      name   
+            ------------------------
 
-
-        // Table: animals
-
-        id      name   
-        ------------------------
-
-        1       horses 
-        2       chickens 
-        3       cows     
-        4       hens 
-        5       cows     
-        6       pigs     
+            1       Lon Lon Ranch  
+            2       Morton Farm     
 
 
-        // Table: farms_animals
+            // Table: animals
 
-        farm_id     animal_id
-        ------------------------
+            id      name   
+            ------------------------
 
-        1           1   // LLR has horses
-        1           2   // LLR has chickens
-        1           3   // LLR has cows
-        2           1   // MF has horses
-        2           4   // MF has hens
-        2           6   // MF has pigs
-        ```
+            1       horses 
+            2       chickens 
+            3       cows     
+            4       hens 
+            5       cows     
+            6       pigs     
+
+
+            // Table: farms_animals
+
+            farm_id     animal_id
+            ------------------------
+
+            1           1   // LLR has horses
+            1           2   // LLR has chickens
+            1           3   // LLR has cows
+            2           1   // MF has horses
+            2           4   // MF has hens
+            2           6   // MF has pigs
+            ```
 
  
 2. 3 Different Relationship Types
@@ -177,7 +185,8 @@
     * **One-to-One Relationships** - Table A can only link to a single row in Table B and vice versa. It's usually only useful for splitting up tables that have a ton of columns. 
         
         * Example: Let's say our farms table also has a column called revenue for tracking the revenue of that farm. We split that revenue value out into another table. The new revenue table would link back to the farm table with the farm_id column, creating a one-to-one relationship.
-        
+
+
         ```
         // Table: farms
 
