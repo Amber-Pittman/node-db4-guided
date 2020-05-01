@@ -321,4 +321,4 @@
 
 2. We are going to draw it all out before writing any code. It will help visualize the schema. 
 
-<img src="assets/DataModeling-SchemaDesign.jpg" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species." data-pin-nopin="true" />
+<img src="assets/DataModeling-SchemaDesign.jpg" data-pin-nopin="true" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species."/>
