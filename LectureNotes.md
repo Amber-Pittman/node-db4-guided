@@ -184,31 +184,121 @@
 
     * **One-to-One Relationships** - Table A can only link to a single row in Table B and vice versa. It's usually only useful for splitting up tables that have a ton of columns. 
         
-        * Example: Let's say our farms table also has a column called revenue for tracking the revenue of that farm. We split that revenue value out into another table. The new revenue table would link back to the farm table with the farm_id column, creating a one-to-one relationship.
+        * Example: Let's say our farms table also has a column called revenue for tracking the revenue of that farm. We split that revenue value out into another table. The new revenue table would link back to the farm table with the farm_id column, creating a one-to-one relationship. Additionally, the farms table no longer requires the revenue table but it would need to link to the revenue table allowing the communication between the two to happen.
+
+        * It's not always necessary to create these one-to-one relationships like this, you could put the revenue column directly in the farms table and it would be fine in this case. But sometimes it's nice to split things up when you start dealing with a ton of columns in one table. 
+
+        * In this particular example, the foreign key can go on either side of the relationship. It can either go on the farms table or the revenue table, or both in order to link one row to the other.  
 
 
         ```
         // Table: farms
 
-        id      name            revenue  
-        ----------------------------------------
+        id      name           revenue_id 
+        -------------------------------------
 
-        1       Lon Lon Ranch   56000
-        2       Morton Farm     142600
+        1       Lon Lon Ranch   1
+        2       Morton Farm     2
 
         // Table: revenue
 
-        id      revenue     farm_id
-        ----------------------------------------
+        id      revenue         farm_id
+        -------------------------------------
 
-        1       56000       1
-        2       142600      2
+        1       56000           1
+        2       142600          2
         ```
 
 
-    * **One-to-Many Relationships** - Our 3-table example above is a bit more complicated because a farm can have many different animal types and the animal types can be found on many different farms. It's no longer that uni-directional relationship.
+    * **One-to-Many Relationships** - Table A can link to many rows in Table B but the rows in Table B can only be associated with a single row in Table A. 
+        
+        * We've already seen an example of this with [Guided Project 3's](https://github.com/Amber-Pittman/node-db3-guided) users and blog posts. 
 
-    * **Many-to-Many Relationships** -
+        * Another example, keeping in line with the farms during this lecture, let's say we also had a table tracking Ranchers or workers at that farm. A farm can have many different ranchers working on that farm and we're assuming ranchers can't work for different farms at the same time.
+
+            * In this case, the foreign key is always going to go on the "many" side (the ranchers table). 
+
+
+        ```
+        // Table: farms (table A)
+
+        id      name           revenue_id 
+        -------------------------------------
+
+        1       Lon Lon Ranch   1
+        2       Morton Farm     2
+
+        // Table: ranchers (table B)
+
+        id      name            farm_id
+        -------------------------------------
+
+        1       Malone          1
+        2       Talon           1
+        3       Ingo            1
+        4       Jane            2
+        5       Jon             2
+        ```
+
+        * Customers and Orders: A customer can have many orders but orders can belong only to a single customer. 
+
+        * Blog posts and Comments are another example of One-to-Many Relationships.
+
+
+
+    * **Many-to-Many Relationships** - Table A can link to many rows in Table B AND Table B can link to many rows in Table C
+        
+        * Our 3-table example is a bit more complicated because a farm can have many different animal types and the animal types can be found on many different farms. 
+
+        * The third table is usually called an _intermediary table_, a _join table_, or a _go-between table_ whose only purpose is to hold the foreign key references for other tables. These particular tables are kind of weird because they don't need a specific id. The primary key can actually be a combination of the two foreign keys. 
+
+            * For example, you can have many rows that use the farm ID of 1 and many rows that use the animal ID of 2; but if the primary key is a combination of the two columns, you can only have one row that uses a combination of those two IDs. 
+
+                * Two farms use the chicken id, but their primary keys are different. 
+
+                    * LLR's Primary Combo Key is 1 2
+                    * MF's Primary Combo Key is 2 2
+
+                * Every instance will be unique
+    
+
+        ```
+        // Table: farms  (table A)
+
+        id      name   
+        ------------------------
+
+        1       Lon Lon Ranch  
+        2       Morton Farm     
+
+
+        // Table: animals  (table B)
+
+        id      name   
+        ------------------------
+
+        1       horses 
+        2       chickens 
+        3       cows     
+        4       hens 
+        5       cows     
+        6       pigs     
+
+
+        // Table: farms_animals  (table C)
+
+        farm_id     animal_id
+        ------------------------
+
+        1           1   // LLR has horses
+        1           2   // LLR has chickens
+        1           3   // LLR has cows
+        2           1   // MF has horses
+        2           2   // MF has chickens
+        2           4   // MF has hens
+        2           6   // MF has pigs
+        ```
+
 
 
 3. Schema Design
