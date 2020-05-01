@@ -344,9 +344,34 @@
 
     * The final requirement is to keep track of where an animal has resided in what zoos and the dates of residency. This means the Zoos table is related to the Animals table; just not related directly. It's a many-to-many relationship. Zoos can have many different animal types and those animal types can live at many different zoos. 
 
-        * Since it's not a direct relationship, we can connect them with a dotted line and define it as `* : *` for many-to-many. 
+        * Since it's not a direct relationship, we can connect them with a dotted line and define it as `* : *` for many-to-many.  
+
+    * We'll need to create a fourth table and call it Zoos_Animal. This will be the Join table (or the Go-Between table). It will provide the necessary connection for the indirect tables to communicate with each other by holding their foreign keys. 
+
+        * We also have to keep track of when the animal was associated with the zoo. In addition to holding the foreign keys, the join table can also hold other types of metadata (in this case, when the animal actually lived at that particular zoo).
+
+        * What columns does this table need?
+
+            * Zoo_Id (integer)
+
+            * Animals_Id (integer) 
+
+            * Arrival_Date (date)
+
+            * Departure_Date (date)
+
+        * The Zoos_Animals table links to both the Animals table and the Zoos table using `1 : *` relationships. The Zoos_Animals creates the `* : *` relationship for the Animals and the Zoos tables. 
+
+    * If we wanted to Normalize the data further, we could create another table for the Zoo Addresses. 
 
 
-<p align="center">
-    <img src="assets/DataModeling-SchemaDesign.jpg" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species." width=750 /> 
-</p>
+    <p align="center">
+        <img src="assets/DataModeling-SchemaDesign.jpg" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species." width=750 /> 
+    </p>
+
+    * Now we have an overview of how our database is going to look like. This will help us a lot when we actually start coding it. 
+
+    * START CODING! 
+    ```
+    Video at 44:49 just before the 5 minute timer starts
+    ```
