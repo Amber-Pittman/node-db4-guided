@@ -320,3 +320,6 @@
 1. Before we write any code, there's this section called "Client Requirements," that simulates this scenario that the client comes to us to build a database for them with specific requirements of what it needs to store. We have to take these requirements and actually build out that functional database for them. 
 
 2. We are going to draw it all out before writing any code. It will help visualize the schema. 
+
+![Schema Design of Zoo Animals. This images shows the relationship types used.](assets/DataModeling-SchemaDesign.jpg)
+
