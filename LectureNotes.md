@@ -571,3 +571,21 @@
     ```
 
 5.  The Seed Files
+
+    * Why is it important to prefix the file names with numbers like they are in the seeds folder? It's about the order of operations. 
+
+        * Since our seeds are now dealing with foreign keys, we can't just insert a row for a foreign key that's pointing to a primary key that doesn't exist yet. We have to make sure the primary key is actually created first before we create the foreign key. 
+
+        * The order of the seeds is very important. We have to have the species table before we try to point to it with the species_id on zoo_animals. 
+
+        * Just like our migration files, our seed files should run in a specific order. When we create them through knex, it doesn't actually prefix the timestamp the way it does with the migrations. 
+
+        * Since the order of seeds is not dependant upon time, but upon the structure of data, we have to manually think through what order these seed files should run in. We just have to manually prefix the file names so that they run in a specific order.  
+
+    * Run our seeds. `npx knex seed:run` 
+        
+        * That will run our 5 seed files. 
+
+        * Restart DB Browser. Browse data. You will now see that our tables have data in them.
+
+    * Start the server. `npm run server`
