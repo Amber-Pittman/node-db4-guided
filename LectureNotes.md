@@ -415,3 +415,42 @@
     * While you could do a new migration for each table, but normally you should think of migration in terms of changes to your database over time instead of tables. Each migration file represents a chunk of time. 
         
         * During a specific period of time, you'd put all your data into one migration. Then, when you come back later, you'd create a new migration file. 
+
+3. Create the Animal table. 
+
+    * The animal table needs an ID, name, and species id. 
+
+    * Go back to your migration file (the initial.js file).
+
+    * Inside the up function, create the new table. 
+
+    * Create the id column.
+
+    * Create the name column. We do want to make this one unique, because you can't really have 2 animal types with the same name. That would result in a data anomaly. 
+
+    * The species id column is a little tricky. It's a foreign key pointing to the species table. Foreign keys have to be the same data type as the primary keys they're pointing at, which is going to be an integer. 
+
+        * To actually create that foreign key, use references. Give references the id column then use inTable and select the species table. That creates the relationship for us. 
+
+    * Add the animals table to our down function to destroy it if it exists. 
+
+    ```
+    exports.up = async function(knex) {
+        await knex.schema.createTable("zoos", (table) => {
+            table.increments("id")
+            table.text("name").notNull()
+            table.text("address").notNull().unique()
+        })
+
+        await knex.schema.createTable("animals", (table) => {
+            table.increments("id")
+            table.text("name").notNull().unique()
+            table.integer("species_id").references("id").inTable("species").notNull().unique()
+        })
+    }
+
+    exports.down = async function(knex) {
+        await knex.schema.dropTableIfExists("animals")
+        await knex.schema.dropTableIfExists("zoos")
+    }
+    ```
