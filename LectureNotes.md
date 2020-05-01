@@ -505,7 +505,7 @@
     }
     ```
 
-4. Create the Zoos_Animals Table
+4. Create the Zoos_Animals Table (the go-between table)
     
     * The zoos animals table needs a zoo id, animal id, a from-date, and a to-date.
 
@@ -570,4 +570,4 @@
     }
     ```
 
-`Stopping Point Video at 1:15:48`
+5.  The Seed Files
