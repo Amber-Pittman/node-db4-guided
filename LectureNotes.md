@@ -569,3 +569,5 @@
         await knex.schema.dropTableIfExists("zoos")
     }
     ```
+
+`Stopping Point Video at 1:15:48`
