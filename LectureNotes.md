@@ -589,3 +589,60 @@
         * Restart DB Browser. Browse data. You will now see that our tables have data in them.
 
     * Start the server. `npm run server`
+
+    * In Insomnia, create some basic GET requests:
+
+        * Get Zoos `GET http://localhost:4000/zoos`
+
+        * Get Species `GET http://localhost:4000/species`
+
+        * Get Animals `GET http://localhost:4000/animals`
+
+6.  Add New Endpoint to Zoos Router. 
+    
+    * All of these already have endpoints created for them in the routers folder. 
+
+    * Create a new endpoint to see the animals. 
+
+    * This will be a little tricky as you can't just query animals. We have to go through the intermediary table (the go-between table) in order to get a list of the animals. 
+
+    * In the router we need a list of the animals using a variable. We will use zoos_animals because it links to the data that we need
+    
+    * Query the zoos_animals table - optional alias
+
+    * Join the zoos table - optional alias
+
+        * The condition is where the zoos id is equal to zoos_animals on zoo_id.
+
+    * Join the animals table - optional alias
+
+        * Like the zoos table, the condition is where the animals id is equal to zoos_animals on animal_id.
+
+    * Limit to a specific zoo with a where statement, where the zoos_animals zoo id column is equal to req.params.id.
+
+    * This will get all of the rows from zoos_animals where the zoo id is equal to our current id. Then, it's going to join in the zoos data and the animals data. This version will result in a lot of columns.
+
+    * To correct this, let's specify some selectors. Before, we were using a wildcard for our selector and selecting everything, but we can prefix the wildcard with a table name.  
+        
+        * Since our focus is on animals, we'll select animals.*. This selects all the columns from the animals table but ignores everything else. 
+
+    * Run the server again and make a request to the endpoint. `GET http://localhost:4000/zoos/1/animals`
+    
+    * We get a list of all the animals on that zoo. 
+
+    ```
+    router.get("/:id/animals", async (req, res, next) => {
+        try {
+            const animals = await db("zoos_animals as za")
+                .join("zoos as z", "z.id" "za.zoo_id")
+                .join("animals as a", "a.id" "za.animal_id")
+                .where("za.zoo_id", req.params.id)
+                .select("a.*")
+
+            res.json(animals)
+        }
+        catch(err) {
+            next(err)
+        }
+    })
+    ```

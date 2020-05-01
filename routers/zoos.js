@@ -29,4 +29,19 @@ router.get("/:id", async (req, res, next) => {
 	}
 })
 
+router.get("/:id/animals", async (req, res, next) => {
+	try {
+		const animals = await db("zoos_animals as za")
+			.join("zoos as z", "z.id" "za.zoo_id")
+			.join("animals as a", "a.id" "za.animal_id")
+			.where("za.zoo_id", req.params.id)
+			.select("a.*")
+
+		res.json(animals)
+	}
+	catch(err) {
+		next(err)
+	}
+})
+
 module.exports = router
