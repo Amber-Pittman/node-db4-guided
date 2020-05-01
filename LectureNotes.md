@@ -222,22 +222,20 @@
         ```
         // Table: farms (table A)
 
-        id      name           revenue_id 
-        -------------------------------------
-
-        1       Lon Lon Ranch   1
-        2       Morton Farm     2
+        | id    | name            | revenue_id | 
+        |--------------------------------------| 
+        | 1     | Lon Lon Ranch   | 1          | 
+        | 2     | Morton Farm     | 2          | 
 
         // Table: ranchers (table B)
 
-        id      name            farm_id
-        -------------------------------------
-
-        1       Malone          1
-        2       Talon           1
-        3       Ingo            1
-        4       Jane            2
-        5       Jon             2
+        | id      | name          | farm_id  | 
+        |------------------------------------| 
+        | 1       | Malone        | 1        | 
+        | 2       | Talon         | 1        | 
+        | 3       | Ingo          | 1        | 
+        | 4       | Jane          | 2        | 
+        | 5       | Jon           | 2        | 
         ```
 
         * Customers and Orders: A customer can have many orders but orders can belong only to a single customer. 
@@ -254,38 +252,35 @@
         ```
         // Table: farms  (table A)
 
-        id      name   
-        ------------------------
-
-        1       Lon Lon Ranch  
-        2       Morton Farm     
+        | id    | name              | 
+        |---------------------------| 
+        | 1     | Lon Lon Ranch     | 
+        | 2     | Morton Farm       | 
 
 
         // Table: animals  (table B)
 
-        id      name   
-        ------------------------
-
-        1       horses 
-        2       chickens 
-        3       cows     
-        4       hens 
-        5       cows     
-        6       pigs     
+        | id    | name          |
+        |-----------------------|
+        | 1     | horses        |
+        | 2     | chickens      |  
+        | 3     | cows          | 
+        | 4     | hens          | 
+        | 5     | cows          |     
+        | 6     | pigs          |     
 
 
         // Table: farms_animals  (table C)
 
-        farm_id     animal_id
-        ------------------------
-
-        1           1   // LLR has horses
-        1           2   // LLR has chickens
-        1           3   // LLR has cows
-        2           1   // MF has horses
-        2           2   // MF has chickens
-        2           4   // MF has hens
-        2           6   // MF has pigs
+        | farm_id  |   animal_id                 |
+        |----------|-----------------------------|
+        | 1        |   1   // LLR has horses     |
+        | 1        |   2   // LLR has chickens   |
+        | 1        |   3   // LLR has cows       |
+        | 2        |   1   // MF has horses      |
+        | 2        |   2   // MF has chickens    |   
+        | 2        |   4   // MF has hens        |
+        | 2        |   6   // MF has pigs        |
         ```
 
 
@@ -317,8 +312,40 @@
             
 ### Code Along!
 
-1. Before we write any code, there's this section called "Client Requirements," that simulates this scenario that the client comes to us to build a database for them with specific requirements of what it needs to store. We have to take these requirements and actually build out that functional database for them. 
+1. Before we write any code, there's this section called ["Client Requirements,"](README.md) that simulates this scenario that the client comes to us to build a database for them with specific requirements of what it needs to store. We have to take these requirements and actually build out that functional database for them. 
 
-2. We are going to draw it all out before writing any code. It will help visualize the schema. 
+2. We are going to draw it all out before writing any code. It will help visualize the schema. Take a look at the client's requirements. 
 
-<img src="assets/DataModeling-SchemaDesign.jpg" data-pin-nopin="true" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species."/>
+    * The first table we need is Zoos. What columns should the zoos table have? 
+
+        * ID (integer)
+
+        * Name (string)
+
+        * Address (string)
+
+    * We also need an Animals table. The animals table needs what columns?
+
+        * ID (integer)
+
+        * Name (string)
+
+        * Species ID (integer)
+            
+            * Species has it's own name. If we want this data to be normalized, we shouldn't store the species name in the animal table.
+
+    * To normalize our species data, we create another table and link to it with a foreign key. 
+
+        * ID (integer)
+
+        * Name (string)
+
+    * The relationship between Animal and Species is a one-to-many. We can represent that by drawing a line between the two boxes. We can define the relationship type as `1 : *`. 
+
+    * The final requirement is to keep track of where an animal has resided in what zoos and the dates of residency. This means the Zoos table is related to the Animals table; just not related directly. It's a many-to-many relationship. Zoos can have many different animal types and those animal types can live at many different zoos. 
+
+        * Since it's not a direct relationship, we can connect them with a dotted line and define it as `* : *` for many-to-many. 
+
+
+
+<img src="assets/DataModeling-SchemaDesign.jpg" data-pin-nopin="true" alt="Schema Design of Zoo Animals. This image shows the relationship types used between 4 tables: zoos, animals, zoo animals, and species." width=500/>
