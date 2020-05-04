@@ -694,7 +694,7 @@
     })
     ```
 
-    * What happens if that field is "Not Nullable?" According to Knex's documentation on [Foreign Schema](https://knexjs.org/#Schema-foreign), you can also chain onDelete() and/or onUpdate() to set the reference option (RESTRICT, CASCADE, SET NULL, NO ACTION) for the operation.
+    * What happens if that field is "Not Nullable?" According to Knex's documentation on [Foreign Schema](https://knexjs.org/#Schema-foreign), you can also chain onDelete() to set the reference option (RESTRICT, CASCADE, SET NULL, NO ACTION) for the operation.
 
         * _Restrict_ is what prevented us from deleting the raccoon row in the first place.
 
@@ -718,24 +718,40 @@
 
         * If you have a foreign key that is not allowed to be null, the only other option if that foreign key is broken, it to delete that row too; which is what we just did.
 
-    * Revert those changes and delete the lockfile.
+    * Revert those changes and delete the lockfile. Refresh DB Browser. The deleted files are now back. We can continue on.
 
-    * Going back to the Knex
+    * Going back to the Knex Documentation, not only on `.onDelete()`, but on `.onUpdate()`, we can use it to set the reference option as well. It tells the database what to do in the event the primary key has changed for another row.
+
+    * It is never a good idea to change your primary key once it is set, but in the very rare event you actually need to, giving the foreign keys a reference option will prevent a data anomaly. 
+
+    * Add `.onUpdate("CASCADE")` to zoo_id and to animal_id, as well as the species_id on the animals table.
+
+    * Rollback and then run the latest migration again then run the seed again.
+
+        * `npx knex migrate:rollback && npx knex migrate:latest && npx knex seed:run`
+
+    * Go to the database and refresh it. 
+
+    * Go to the zoos table, double-click on the zoo id of 1. You'll edit the ID to 5. You are editing the primary key - something you should probably never, ever do but just in the event that it does happen, click Apply. Now that zoo has been updated to the ID of 5. 
+
+    Now because of our reference options, if you go to the zoos_animals table, you will now see the zoo_id has been updated. All the pointers have been updated to 5.
 
     ```
     await knex.schema.createTable("zoos_animals", (table) => {
         table.integer("zoo_id")
             .references("id")
             .inTable("zoos")
-            .onDelete("CASCADE)
+            .onDelete("CASCADE")
+            .onUpdate("CASCADE")
         table.integer("animal_id")
             .references("id")
             .inTable("animals")
-            .onDelete("CASCADE)
+            .onDelete("CASCADE")
+            .onUpdate("CASCADE")
         table.date("from_date").defaultTo(knex.raw("current_timestamp"))
         table.date("to_date")
         table.primary(["zoo_id", "animal_id"])
     })
     ```
 
-    
+### DONE!
