@@ -628,7 +628,15 @@
 
     * Run the server again and make a request to the endpoint. `GET http://localhost:4000/zoos/1/animals`
     
-    * We get a list of all the animals on that zoo. 
+    * We get a list of all the animals on that zoo. We're going through 3 different tables to get that animal data and we're able to see the animal names.  
+
+    * Join the species table with the condition of species id is equal to the animal species id so we can return the species name instead of just the ID.
+
+    * Update the selector. Instead of the wildcard, let's select the animals id, the animals name, the species name, and give the species name an alias to prevent column duplication. Don't forget to return both dates. 
+
+    * Test in Insomnia on the Get Zoo Animals again. We get everything we're supposed to get.
+
+    * As of now, we're querying every single table at once. 
 
     ```
     router.get("/:id/animals", async (req, res, next) => {
@@ -636,8 +644,15 @@
             const animals = await db("zoos_animals as za")
                 .join("zoos as z", "z.id" "za.zoo_id")
                 .join("animals as a", "a.id" "za.animal_id")
+                .join("species as s", "s.id" "a.species_id")
                 .where("za.zoo_id", req.params.id)
-                .select("a.*")
+                .select(
+                    "a.id",
+                    "a.name",
+                    "s.name as species",
+                    "za.from_date",
+                    "za.to_date"
+                )
 
             res.json(animals)
         }
@@ -646,3 +661,4 @@
         }
     })
     ```
+7. Reference Options

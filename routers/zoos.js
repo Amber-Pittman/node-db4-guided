@@ -34,8 +34,15 @@ router.get("/:id/animals", async (req, res, next) => {
 		const animals = await db("zoos_animals as za")
 			.join("zoos as z", "z.id" "za.zoo_id")
 			.join("animals as a", "a.id" "za.animal_id")
+			.join("species as s", "s.id" "a.species_id")
 			.where("za.zoo_id", req.params.id)
-			.select("a.*")
+			.select(
+				"a.id",
+				"a.name",
+				"s.name as species",
+				"za.from_date",
+				"za.to_date"
+			)
 
 		res.json(animals)
 	}
