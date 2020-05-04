@@ -455,7 +455,7 @@
         await knex.schema.dropTableIfExists("zoos")
     }
     ```
-3. Create the Species Table
+4. Create the Species Table
 
     * The species table needs an ID and a name.
 
@@ -505,7 +505,7 @@
     }
     ```
 
-4. Create the Zoos_Animals Table (the go-between table)
+5. Create the Zoos_Animals Table (the go-between table)
     
     * The zoos animals table needs a zoo id, animal id, a from-date, and a to-date.
 
@@ -570,7 +570,7 @@
     }
     ```
 
-5.  The Seed Files
+6.  The Seed Files
 
     * Why is it important to prefix the file names with numbers like they are in the seeds folder? It's about the order of operations. 
 
@@ -598,7 +598,7 @@
 
         * Get Animals `GET http://localhost:4000/animals`
 
-6.  Add New Endpoint to Zoos Router. 
+7.  Add New Endpoint to Zoos Router. 
     
     * All of these already have endpoints created for them in the routers folder. 
 
@@ -642,9 +642,9 @@
     router.get("/:id/animals", async (req, res, next) => {
         try {
             const animals = await db("zoos_animals as za")
-                .join("zoos as z", "z.id" "za.zoo_id")
-                .join("animals as a", "a.id" "za.animal_id")
-                .join("species as s", "s.id" "a.species_id")
+                .join("zoos as z", "z.id", "za.zoo_id")
+                .join("animals as a", "a.id", "za.animal_id")
+                .join("species as s", "s.id", "a.species_id")
                 .where("za.zoo_id", req.params.id)
                 .select(
                     "a.id",
@@ -661,4 +661,12 @@
         }
     })
     ```
-7. Reference Options
+8. Reference Options
+
+    * If you went into the species table and tried to delete the Racoon row, SQLite will not allow it. You have a foreign key directed it on the animals table. Because of the connection, you can't just delete it. Doing so would create a data anomaly - the animals table would have a foreign key pointing to something that didn't exist.
+
+        * Sometimes this restriction is a good thing because we don't want these data anomalies. 
+
+        * However, it can be a huge pain if you needed to delete a record by going through it manually. Reference options can help us out here. 
+
+    * Go back to your migration file. 

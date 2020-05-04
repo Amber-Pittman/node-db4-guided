@@ -32,9 +32,9 @@ router.get("/:id", async (req, res, next) => {
 router.get("/:id/animals", async (req, res, next) => {
 	try {
 		const animals = await db("zoos_animals as za")
-			.join("zoos as z", "z.id" "za.zoo_id")
-			.join("animals as a", "a.id" "za.animal_id")
-			.join("species as s", "s.id" "a.species_id")
+			.join("zoos as z", "z.id", "za.zoo_id")
+			.join("animals as a", "a.id", "za.animal_id")
+			.join("species as s", "s.id", "a.species_id")
 			.where("za.zoo_id", req.params.id)
 			.select(
 				"a.id",
