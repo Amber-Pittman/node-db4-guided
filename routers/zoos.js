@@ -15,7 +15,8 @@ router.get("/:id", async (req, res, next) => {
 	try {
 		const zoo = await db("zoos")
 			.where("id", req.params.id)
-			.first()
+			.first() //Similar to select, but only retrieves & resolves
+					 // with the first record from the query
 		
 		if (!zoo) {
 			return res.status(404).json({
