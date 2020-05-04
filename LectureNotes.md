@@ -669,4 +669,73 @@
 
         * However, it can be a huge pain if you needed to delete a record by going through it manually. Reference options can help us out here. 
 
-    * Go back to your migration file. 
+    * Go back to the animals table in your migration file. 
+
+    * When we created the foreign key on `.references(...).inTable(...)`, we can specify a reference option using `.onDelete()` giving it an option of Set Null. What's going to happen when we try and delete a species, it will delete it. Any animal that's referencing it, that foreign key will be set to null. 
+
+    * In DB Browser, choose to either "write changes' or "revert changes" to remove the lockfile on your database.
+
+    * Run your migration again. Rollback first before running latest.
+
+    * Run your seed again. `npx knex seed:run`
+
+    * Go into the species table in DB Browser and refresh it. Try to delete the raccoon species from the species table now. It deleted it without error in DB Browser.
+
+    * Check out the animals table. Rocky's species id is now set to NULL since the relationship is broken. The `.onDelete()` deleted the _foreign key_ automatically.
+
+    ```
+    await knex.schema.createTable("animals", (table) => {
+        table.increments("id")
+        table.text("name").notNull().unique()
+        table.integer("species_id")
+            .references("id")
+            .inTable("species")
+            .onDelete("SET NULL")
+    })
+    ```
+
+    * What happens if that field is "Not Nullable?" According to Knex's documentation on [Foreign Schema](https://knexjs.org/#Schema-foreign), you can also chain onDelete() and/or onUpdate() to set the reference option (RESTRICT, CASCADE, SET NULL, NO ACTION) for the operation.
+
+        * _Restrict_ is what prevented us from deleting the raccoon row in the first place.
+
+        * _Cascade_ will actually delete all the rows that are referencing the deleted row. Cascade is the delete. 
+
+        * _Set Null_ sets the column to null when that reference is deleted. 
+
+        * _No Action_ literally doesn't do anything.
+
+    * Let's try specifying Cascade in our Zoos Animals table on our zoo id foreign key. Apply same logic to animal id.
+
+    * In DB Browser, choose to either "write changes' or "revert changes" to remove the lockfile on your database.
+
+    * Run your migration again. Rollback first before running latest. Run your seed again. 
+        
+        * `npx knex migrate:rollback && npx knex migrate:latest && npx knex seed:run`
+
+    * Go into the zoos animals table in DB Browser and refresh it. You'll see foreign keys with a zoo_id of 1. Delete the row of zoos_id in the zoos table, then go back to zoos_animals table. It has deleted _all_ the rows associated with the deleted zoo. It _cascaded_ that delete. 
+        
+        * That's really helpful if you have a key value with a not null constraint on it.
+
+        * If you have a foreign key that is not allowed to be null, the only other option if that foreign key is broken, it to delete that row too; which is what we just did.
+
+    * Revert those changes and delete the lockfile.
+
+    * Going back to the Knex
+
+    ```
+    await knex.schema.createTable("zoos_animals", (table) => {
+        table.integer("zoo_id")
+            .references("id")
+            .inTable("zoos")
+            .onDelete("CASCADE)
+        table.integer("animal_id")
+            .references("id")
+            .inTable("animals")
+            .onDelete("CASCADE)
+        table.date("from_date").defaultTo(knex.raw("current_timestamp"))
+        table.date("to_date")
+        table.primary(["zoo_id", "animal_id"])
+    })
+    ```
+
+    
